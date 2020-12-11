@@ -1,0 +1,146 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+#############################################################################
+# Copyright 2020 Ramon Fischer                                              #
+#                                                                           #
+# Licensed under the Apache License, Version 2.0 (the "License");           #
+# you may not use this file except in compliance with the License.          #
+# You may obtain a copy of the License at                                   #
+#                                                                           #
+#     http://www.apache.org/licenses/LICENSE-2.0                            #
+#                                                                           #
+# Unless required by applicable law or agreed to in writing, software       #
+# distributed under the License is distributed on an "AS IS" BASIS,         #
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  #
+# See the License for the specific language governing permissions and       #
+# limitations under the License.                                            #
+#############################################################################
+
+$prerequisites_l4d2_ds_development_vm = <<SCRIPT
+mkdir --parents "/home/vagrant/.ansible/facts.d"
+chmod --recursive 700 "/home/vagrant/.ansible"
+chown --recursive vagrant:vagrant "/home/vagrant/.ansible"
+
+chmod 750 "/etc/sudoers.d"
+cat > "/etc/sudoers.d/01-vagrant" <<EOF
+# this file was created by "vagrant". all changes will be lost!
+
+# disable tty for the user "vagrant"
+Defaults:vagrant !requiretty
+# allow the user "vagrant" on the host "$(hostname)" to become any user or group "(ALL:ALL)" and to execute any commands "ALL" without providing a password "NOPASSWD"
+vagrant $(hostname)=(ALL:ALL) NOPASSWD:ALL
+EOF
+chmod 440 "/etc/sudoers.d/01-vagrant"
+
+sed --regexp-extended --in-place "s/.?.*auth.*required.*pam_wheel.so.*deny.*group=nosu/auth       required   pam_wheel.so deny group=sudo/" "/etc/pam.d/su"
+
+# cleanup
+rm "/tmp/vagrant-shell"
+SCRIPT
+
+$prerequisites_l4d2_ds_provision_vm = <<SCRIPT
+mkdir --parents "/home/vagrant/.ansible/facts.d"
+mkdir --parents "/home/vagrant/.ansible/tmp"
+mkdir --parents "/home/vagrant/.local/etc/ansible/cached_facts"
+mkdir --parents "/home/vagrant/.local/etc/ansible/retry"
+chmod --recursive 700 "/home/vagrant/.ansible"
+chmod --recursive 700 "/home/vagrant/.local"
+chown --recursive vagrant:vagrant "/home/vagrant/.ansible"
+chown --recursive vagrant:vagrant "/home/vagrant/.local"
+
+cp "/vagrant/.vagrant/machines/l4d2-ds-development-vm/virtualbox/private_key" "/home/vagrant/.ssh/l4d2-ds-development-vm_private_key"
+chmod 600 "/home/vagrant/.ssh/l4d2-ds-development-vm_private_key"
+mkdir --parents --mode="700" "/home/vagrant/.ssh/cm"
+chown --recursive vagrant:vagrant "/home/vagrant/.ssh"
+
+chmod 750 "/etc/sudoers.d"
+cat > "/etc/sudoers.d/01-vagrant" <<EOF
+# this file was created by "vagrant". all changes will be lost!
+
+# disable tty for the user "vagrant"
+Defaults:vagrant !requiretty
+# allow the user "vagrant" on the host "$(hostname)" to become any user or group "(ALL:ALL)" and to execute any commands "ALL" without providing a password "NOPASSWD"
+vagrant $(hostname)=(ALL:ALL) NOPASSWD:ALL
+EOF
+chmod 440 "/etc/sudoers.d/01-vagrant"
+
+sed --regexp-extended --in-place "s/.?.*auth.*required.*pam_wheel.so.*deny.*group=nosu/auth       required   pam_wheel.so deny group=sudo/" "/etc/pam.d/su"
+
+mkdir --parents --mode="740" "/var/log/ansible"
+touch "/var/log/ansible/ansible.log"
+chmod 640 "/var/log/ansible/ansible.log"
+chown --recursive vagrant:vagrant "/var/log/ansible"
+
+cat > "/etc/logrotate.d/ansible" <<EOF
+/var/log/ansible/ansible.log
+{
+    weekly
+    rotate 12
+    compress
+    delaycompress
+    missingok
+    notifempty
+    create 0640 vagrant vagrant
+}
+EOF
+
+# cleanup
+rm "/tmp/vagrant-shell"
+SCRIPT
+
+Vagrant.configure("2") do |config|
+    config.vm.box = "debian/buster64"
+    config.vm.box_check_update = true
+    config.vm.synced_folder ".", "/vagrant", type: "virtualbox", owner: "vagrant", group: "vagrant"
+
+    if Vagrant.has_plugin?("vagrant-vbguest")
+        config.vbguest.auto_update = true
+        config.vbguest.no_remote = true
+    end
+
+    # internal vm, which is configured like the real machine
+    config.vm.define "l4d2-ds-development-vm" do |vmConfig|
+        vmConfig.vm.provision "shell", inline: $prerequisites_l4d2_ds_development_vm
+        vmConfig.vm.synced_folder ".", "/vagrant", disabled: true
+        vmConfig.vbguest.auto_update = false
+        vmConfig.vm.hostname = "l4d2-ds-development-vm"
+        vmConfig.vm.network "private_network", ip: "192.168.100.100", virtualbox__intnet: "vm_private_network"
+        # bridged network via dhcp
+        vmConfig.vm.network "public_network"
+        # bridged network static
+        #vmConfig.vm.network "public_network", ip: "192.168.1.2"
+
+        vmConfig.vm.provider "virtualbox" do |vb|
+            vb.memory = "8192"
+            vb.cpus = 2
+            vb.name = "l4d2-ds-development-vm"
+            vb.linked_clone = true
+        end
+    end
+
+    # internal vm, which provides "l4d2-ds-development-vm"
+    config.vm.define "l4d2-ds-provision-vm" do |vmConfig|
+        vmConfig.vm.provision "shell", inline: $prerequisites_l4d2_ds_provision_vm
+        vmConfig.vm.network "private_network", ip: "192.168.100.99", virtualbox__intnet: "vm_private_network"
+        vmConfig.vm.hostname = "l4d2-ds-provision-vm"
+
+        vmConfig.vm.provider "virtualbox" do |vb|
+            vb.memory = "512"
+            vb.cpus = 1
+            vb.name = "l4d2-ds-provision-vm"
+            vb.linked_clone = true
+        end
+
+        vmConfig.vm.provision "ansible_local" do |ansible|
+            ansible.provisioning_path = "/vagrant"
+            ansible.playbook = "provisioning/playbooks/install_l4d2_ds.yml"
+            ansible.inventory_path = "provisioning/inventory.yml"
+            ansible.config_file = "provisioning/ansible.cfg"
+            ansible.limit = "l4d2-ds-development-vm"
+            ansible.install_mode = :pip
+            #ansible.version = "2.9.13"
+            #ansible.verbose = "-vvvv"
+        end
+    end
+end

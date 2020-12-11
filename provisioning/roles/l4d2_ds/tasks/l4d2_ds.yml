@@ -1,0 +1,165 @@
+---
+#############################################################################
+# Copyright 2020 Ramon Fischer                                              #
+#                                                                           #
+# Licensed under the Apache License, Version 2.0 (the "License");           #
+# you may not use this file except in compliance with the License.          #
+# You may obtain a copy of the License at                                   #
+#                                                                           #
+#     http://www.apache.org/licenses/LICENSE-2.0                            #
+#                                                                           #
+# Unless required by applicable law or agreed to in writing, software       #
+# distributed under the License is distributed on an "AS IS" BASIS,         #
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  #
+# See the License for the specific language governing permissions and       #
+# limitations under the License.                                            #
+#############################################################################
+
+# todo
+## systemd service unit with parameters:
+### start left 4 dead dedicated server
+### update left 4 dead dedicated server
+## cronjob
+### /home/steam/steamcmd_scripts/update_l4d2ds.txt
+#### @ShutdownOnFailedCommand 1
+#### @NoPromptForPassword 1
+#### login anonymous
+#### app_update 222860 validate
+#### quit
+### /home/steam/steamcmd_scripts/.local/etc/cronjobs/update_l4d2_cs.sh
+#### /usr/games/steamcmd +runscript "/home/steam/steamcmd_scripts/update_l4d2ds.txt"
+## split "l4d2_ds.yml" into categories
+### create_user_and_group.yml
+### install_steamcmd.yml
+### install_l4d2_ds.yml
+### install_cronjob.yml
+
+- name: create group "steam"
+  group:
+    name: "steam"
+    state: "present"
+  tags:
+    - l4d2_ds
+
+- name: add user only for steam dedicated servers
+  user:
+    name: "steam"
+    group: "steam"
+    password: "!"
+    shell: "/sbin/nologin"
+    home: "/home/steam/"
+    update_password: "on_create"
+    create_home: "yes"
+    state: "present"
+  tags:
+    - l4d2_ds
+
+- name: add fastest package mirror and allow "non-free" packages
+  apt_repository:
+    repo: "{{ item.APT_REPOSITORY_REPO }}"
+    filename: "{{ item. APT_REPOSITORY_FILENAME }}"
+    update_cache: "no"
+    state: "present"
+  with_items:
+    - { APT_REPOSITORY_REPO: "deb http://ftp.debian.org/debian buster main non-free",
+        APT_REPOSITORY_FILENAME: "ftp.debian.org_main" }
+    - { APT_REPOSITORY_REPO: "deb http://ftp.debian.org/debian buster-updates main non-free",
+        APT_REPOSITORY_FILENAME: "ftp.debian.org_updates" }
+    - { APT_REPOSITORY_REPO: "deb http://security.debian.org buster/updates main non-free",
+        APT_REPOSITORY_FILENAME: "ftp.debian.org_security" }
+  tags:
+    - l4d2_ds
+
+- name: allow 32 bit packages, required for "steamcmd"
+  shell: "dpkg --add-architecture i386"
+  args:
+    creates: "/var/lib/dpkg/arch"
+  tags:
+    - l4d2_ds
+
+- name: update package cache
+  package:
+    update_cache: "yes"
+  tags:
+    - l4d2_ds
+
+- name: accept steam license agreement
+  debconf:
+    name: "steamcmd:i386"
+    question: "steam/question"
+    value: "I AGREE"
+    vtype: "select"
+  tags:
+    - l4d2_ds
+
+- name: install text-based steam client (steamcmd)
+  package:
+    name: "steamcmd:i386"
+    state: "latest"
+  tags:
+    - l4d2_ds
+
+# refactor me: trigger "start" and "enable" handler here
+# app list: https://developer.valvesoftware.com/wiki/Steam_Application_IDs
+# dedicated servers list: https://developer.valvesoftware.com/wiki/Dedicated_Servers_List
+- name: install and validate "left 4 dead 2 dedicated server"
+  shell: "/usr/games/steamcmd +login anonymous +app_update 222860 validate +quit"
+  args:
+    creates: "/home/steam/.steam/SteamApps/common/Left 4 Dead 2 Dedicated Server/"
+  become_user: "steam"
+  tags:
+    - l4d2_ds
+
+- name: create custom log directory
+  file:
+    path: "/var/log/steam"
+    owner: "steam"
+    group: "steam"
+    mode: "0700"
+    state: "directory"
+  tags:
+    - l4d2_ds
+
+- name: set up logrotate
+  template:
+    src: "templates/etc/logrotate.d/steam_srcds_run.j2"
+    dest: "/etc/logrotate.d/steam_srcds_run"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+    validate: "/sbin/logrotate --debug %s"
+  tags:
+    - l4d2_ds
+
+- name: create symlinks to steam log directory
+  file:
+    src: "/home/steam/.steam/logs"
+    dest: "/var/log/steam/logs"
+    owner: "steam"
+    group: "steam"
+    state: "link"
+  tags:
+    - l4d2_ds
+
+# refactor me: comment this, when the systemd service unit is finished
+- name: create directory for pid files
+  file:
+    path: "/home/steam/.local/run/"
+    owner: "steam"
+    group: "steam"
+    mode: "0700"
+    state: "directory"
+  tags:
+    - l4d2_ds
+
+# refactor me: comment this, when the systemd service unit is finished
+# "stdout" has to be redirected somewhere, in order to put the process in the background
+# command line options: https://developer.valvesoftware.com/wiki/Command_Line_Options
+- name: start "left 4 dead 2 dedicated server"
+  shell: "./srcds_run -pidfile /home/steam/.local/run/srcds_run.pid -ip 0.0.0.0 -port 27015 -game left4dead2 +map c1m1_hotel >> /var/log/steam/srcds_run.log 2>&1 &"
+  args:
+    chdir: "/home/steam/.steam/SteamApps/common/Left 4 Dead 2 Dedicated Server/"
+    creates: "/home/steam/.local/run/srcds_run.pid"
+  become_user: "steam"
+  tags:
+    - l4d2_ds

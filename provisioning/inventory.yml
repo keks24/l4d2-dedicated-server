@@ -1,0 +1,35 @@
+---
+#############################################################################
+# Copyright 2020 Ramon Fischer                                              #
+#                                                                           #
+# Licensed under the Apache License, Version 2.0 (the "License");           #
+# you may not use this file except in compliance with the License.          #
+# You may obtain a copy of the License at                                   #
+#                                                                           #
+#     http://www.apache.org/licenses/LICENSE-2.0                            #
+#                                                                           #
+# Unless required by applicable law or agreed to in writing, software       #
+# distributed under the License is distributed on an "AS IS" BASIS,         #
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  #
+# See the License for the specific language governing permissions and       #
+# limitations under the License.                                            #
+#############################################################################
+
+all:
+  #vars:
+  #  ansible_port: "<some_port_number>"
+  #  ansible_private_key_file: "<some_absolute_path_to_ssh_private_key>"
+  #  ansible_user: "<some_username>"
+  #  ansible_become: "yes"
+  children:
+    development:
+      vars:
+        ansible_port: "22"
+        ansible_user: "vagrant"
+        ansible_become: "yes"
+      hosts:
+        l4d2-ds-provision-vm:
+          ansible_connection: "local"
+        l4d2-ds-development-vm:
+          ansible_host: "192.168.100.100"
+          ansible_private_key_file: "/home/vagrant/.ssh/l4d2-ds-development-vm_private_key"

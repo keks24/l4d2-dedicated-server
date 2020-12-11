@@ -1,0 +1,7 @@
+# ansible
+## ignore retry files
+*.retry
+
+# vagrant
+## ignore vm configuration files
+.vagrant
