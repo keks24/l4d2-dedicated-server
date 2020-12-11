@@ -47,7 +47,7 @@
     - { APT_REPOSITORY_REPO: "deb http://ftp.debian.org/debian buster-updates main non-free",
         APT_REPOSITORY_FILENAME: "ftp.debian.org_updates" }
     - { APT_REPOSITORY_REPO: "deb http://security.debian.org buster/updates main non-free",
-        APT_REPOSITORY_FILENAME: "ftp.debian.org_security" }
+        APT_REPOSITORY_FILENAME: "security.debian.org_security" }
   tags:
     - l4d2_ds
 
@@ -112,7 +112,7 @@
   tags:
     - l4d2_ds
 
-- name: create symlinks to steam log directory
+- name: create symlink to steam log directory
   file:
     src: "/home/steam/.steam/logs"
     dest: "/var/log/steam/logs"
@@ -125,7 +125,7 @@
 # refactor me: comment this, when the systemd service unit is finished
 - name: create directory for pid files
   file:
-    path: "/home/steam/.local/run/"
+    path: "/run/steam"
     owner: "steam"
     group: "steam"
     mode: "0700"
@@ -137,10 +137,10 @@
 # "stdout" has to be redirected somewhere, in order to put the process in the background
 # command line options: https://developer.valvesoftware.com/wiki/Command_Line_Options
 - name: start "left 4 dead 2 dedicated server"
-  shell: "./srcds_run -pidfile /home/steam/.local/run/srcds_run.pid -ip 0.0.0.0 -port 27015 -game left4dead2 +map c1m1_hotel >> /var/log/steam/srcds_run.log 2>&1 &"
+  shell: "./srcds_run -pidfile /run/steam/srcds_run.pid -ip 0.0.0.0 -port 27015 -game left4dead2 +map c1m1_hotel >> /var/log/steam/srcds_run.log && rm --force /run/steam/srcds_run.pid 2>&1 &"
   args:
     chdir: "/home/steam/.steam/SteamApps/common/Left 4 Dead 2 Dedicated Server/"
-    creates: "/home/steam/.local/run/srcds_run.pid"
+    creates: "/run/steam/srcds_run.pid"
   become_user: "steam"
   tags:
     - l4d2_ds
