@@ -15,25 +15,6 @@
 # limitations under the License.                                            #
 #############################################################################
 
-# todo
-## systemd service unit with parameters:
-### start left 4 dead dedicated server
-### update left 4 dead dedicated server
-## cronjob
-### /home/steam/steamcmd_scripts/update_l4d2ds.txt
-#### @ShutdownOnFailedCommand 1
-#### @NoPromptForPassword 1
-#### login anonymous
-#### app_update 222860 validate
-#### quit
-### /home/steam/steamcmd_scripts/.local/etc/cronjobs/update_l4d2_cs.sh
-#### /usr/games/steamcmd +runscript "/home/steam/steamcmd_scripts/update_l4d2ds.txt"
-## split "l4d2_ds.yml" into categories
-### create_user_and_group.yml
-### install_steamcmd.yml
-### install_l4d2_ds.yml
-### install_cronjob.yml
-
 - name: create group "steam"
   group:
     name: "steam"
