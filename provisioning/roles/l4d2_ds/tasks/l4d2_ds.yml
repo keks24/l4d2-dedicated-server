@@ -133,11 +133,12 @@
   tags:
     - l4d2_ds
 
-# refactor me: comment this, when the systemd service unit is finished
+# refactor me: refactor this into a shell script, remove the pid file on "EXIT" signal
+#              comment this, when the systemd service unit is finished
 # "stdout" has to be redirected somewhere, in order to put the process in the background
 # command line options: https://developer.valvesoftware.com/wiki/Command_Line_Options
 - name: start "left 4 dead 2 dedicated server"
-  shell: "./srcds_run -pidfile /run/steam/srcds_run.pid -ip 0.0.0.0 -port 27015 -game left4dead2 +map c1m1_hotel >> /var/log/steam/srcds_run.log && rm --force /run/steam/srcds_run.pid 2>&1 &"
+  shell: "./srcds_run -pidfile /run/steam/srcds_run.pid -ip 0.0.0.0 -port 27015 -game left4dead2 +map c1m1_hotel >> /var/log/steam/srcds_run.log 2>&1 &"
   args:
     chdir: "/home/steam/.steam/SteamApps/common/Left 4 Dead 2 Dedicated Server/"
     creates: "/run/steam/srcds_run.pid"
