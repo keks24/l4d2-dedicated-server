@@ -41,7 +41,7 @@
   tags:
     - l4d2_ds
 
-- name: add user only for steam dedicated servers
+- name: add user "steam" only for steam dedicated servers
   user:
     name: "steam"
     group: "steam"
@@ -54,7 +54,7 @@
   tags:
     - l4d2_ds
 
-- name: add fastest package mirror and allow "non-free" packages
+- name: allow "non-free" packages
   apt_repository:
     repo: "{{ item.APT_REPOSITORY_REPO }}"
     filename: "{{ item. APT_REPOSITORY_FILENAME }}"
