@@ -15,6 +15,7 @@
 # limitations under the License.                                            #
 #############################################################################
 
+# command line options: https://developer.valvesoftware.com/wiki/Command_Line_Options
 SERVER_IP="0.0.0.0"
 SERVER_PORT="27015"
 GAME_NAME="left4dead2"
@@ -22,4 +23,4 @@ GAME_MAP="c1m1_hotel"
 PID_FILE="/var/tmp/l4d2-ds.pid"
 LOG_FILE="/var/log/steam/l4d2-ds.log"
 ERROR_LOG_FILE="/var/log/steam/l4d2-ds_error.log"
-#SRCDS_RUN_OPTS=""
+SRCDS_RUN_OPTS="+sv_lan 1"
