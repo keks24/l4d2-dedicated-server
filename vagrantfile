@@ -19,6 +19,7 @@
 
 $prerequisites_l4d2_ds_development_vm = <<SCRIPT
 mkdir --parents "/home/vagrant/.ansible/facts.d"
+mkdir --parents "/home/vagrant/.ansible/tmp"
 chmod --recursive 700 "/home/vagrant/.ansible"
 chown --recursive vagrant:vagrant "/home/vagrant/.ansible"
 
