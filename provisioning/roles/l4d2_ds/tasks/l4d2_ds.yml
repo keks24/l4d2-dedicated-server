@@ -92,22 +92,14 @@
 
 - name: create custom log directory
   file:
-    path: "/var/log/steam"
+    path: "/var/log/{{ item }}/"
     owner: "steam"
     group: "steam"
     mode: "0700"
     state: "directory"
-  tags:
-    - l4d2_ds
-
-- name: set up logrotate
-  template:
-    src: "templates/etc/logrotate.d/steam_l4d2-ds.j2"
-    dest: "/etc/logrotate.d/steam_l4d2-ds"
-    owner: "root"
-    group: "root"
-    mode: "0644"
-    validate: "/sbin/logrotate --debug %s"
+  with_items:
+    - "steam"
+    - "steam/l4d2-ds"
   tags:
     - l4d2_ds
 
