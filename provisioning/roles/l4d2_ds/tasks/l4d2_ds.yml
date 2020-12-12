@@ -113,6 +113,17 @@
   tags:
     - l4d2_ds
 
+- name: set up logrotate
+  template:
+    src: "templates/etc/logrotate.d/l4d2-ds.j2"
+    dest: "/etc/logrotate.d/l4d2-ds"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+    validate: "/sbin/logrotate --debug %s"
+  tags:
+    - l4d2_ds
+
 - name: copy default file for systemd service unit
   template:
     src: "templates/etc/default/l4d2-ds.j2"
