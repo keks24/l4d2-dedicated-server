@@ -122,7 +122,52 @@
   tags:
     - l4d2_ds
 
-# refactor me: comment this, when the systemd service unit is finished
+- name: copy default file for systemd service unit
+  template:
+    src: "templates/etc/default/l4d2-ds.j2"
+    dest: "/etc/default/l4d2-ds"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  notify:
+    - handler_enable_l4d2-ds
+    - handler_start_l4d2-ds
+  tags:
+    - l4d2_ds
+
+- name: copy systemd service unit
+  template:
+    src: "templates/etc/systemd/system/l4d2-ds.service.j2"
+    dest: "/etc/systemd/system/l4d2-ds.service"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  notify:
+    - handler_enable_l4d2-ds
+    - handler_start_l4d2-ds
+  tags:
+    - l4d2_ds
+
+- name: create directory for systemd preset files
+  file:
+    path: "/etc/systemd/system-preset/"
+    owner: "root"
+    group: "root"
+    mode: "0755"
+    state: "directory"
+  tags:
+    - l4d2_ds
+
+- name: copy systemd preset file
+  template:
+    src: "templates/etc/systemd/system-preset/99-custom.preset.j2"
+    dest: "/etc/systemd/system-preset/99-custom.preset"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  tags:
+    - l4d2_ds
+
 - name: create directory for pid files
   file:
     path: "/run/steam"
@@ -137,11 +182,11 @@
 #              comment this, when the systemd service unit is finished
 # "stdout" has to be redirected somewhere, in order to put the process in the background
 # command line options: https://developer.valvesoftware.com/wiki/Command_Line_Options
-- name: start "left 4 dead 2 dedicated server"
-  shell: "./srcds_run -pidfile /run/steam/srcds_run.pid -ip 0.0.0.0 -port 27015 -game left4dead2 +map c1m1_hotel >> /var/log/steam/srcds_run.log 2>&1 &"
-  args:
-    chdir: "/home/steam/.steam/SteamApps/common/Left 4 Dead 2 Dedicated Server/"
-    creates: "/run/steam/srcds_run.pid"
-  become_user: "steam"
-  tags:
-    - l4d2_ds
+#- name: start "left 4 dead 2 dedicated server"
+#  shell: "./srcds_run -pidfile /run/steam/l4d2-ds.pid -ip 0.0.0.0 -port 27015 -game left4dead2 +map c1m1_hotel >> /var/log/steam/l4d2-ds.log 2>> /var/log/steam/l4d2-ds_error.log &"
+#  args:
+#    chdir: "/home/steam/.steam/SteamApps/common/Left 4 Dead 2 Dedicated Server/"
+#    creates: "/run/steam/l4d2-ds.pid"
+#  become_user: "steam"
+#  tags:
+#    - l4d2_ds
