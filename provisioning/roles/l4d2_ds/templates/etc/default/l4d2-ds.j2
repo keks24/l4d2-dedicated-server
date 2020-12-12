@@ -1,3 +1,4 @@
+# {{ ansible_managed }}
 #############################################################################
 # Copyright 2020 Ramon Fischer                                              #
 #                                                                           #
@@ -14,14 +15,8 @@
 # limitations under the License.                                            #
 #############################################################################
 
-/var/log/steam/srcds_run.log
-{
-    weekly
-    rotate 12
-    compress
-    delaycompress
-    missingok
-    notifempty
-    copytruncate
-    create 0640 steam steam
-}
+SERVER_IP="0.0.0.0"
+SERVER_PORT="27015"
+GAME_NAME="left4dead2"
+GAME_MAP="c1m1_hotel"
+#SRCDS_RUN_OPTS=""
