@@ -33,6 +33,7 @@ vagrant $(hostname)=(ALL:ALL) NOPASSWD:ALL
 EOF
 chmod 440 "/etc/sudoers.d/01-vagrant"
 
+# do not allow executing "su" for users, who are member of the group "sudo"
 sed --regexp-extended --in-place "s/.?.*auth.*required.*pam_wheel.so.*deny.*group=nosu/auth       required   pam_wheel.so deny group=sudo/" "/etc/pam.d/su"
 
 # cleanup
@@ -65,6 +66,7 @@ vagrant $(hostname)=(ALL:ALL) NOPASSWD:ALL
 EOF
 chmod 440 "/etc/sudoers.d/01-vagrant"
 
+# do not allow executing "su" for users, who are member of the group "sudo"
 sed --regexp-extended --in-place "s/.?.*auth.*required.*pam_wheel.so.*deny.*group=nosu/auth       required   pam_wheel.so deny group=sudo/" "/etc/pam.d/su"
 
 mkdir --parents --mode="740" "/var/log/ansible"
