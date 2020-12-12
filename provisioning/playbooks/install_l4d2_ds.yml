@@ -23,5 +23,12 @@
       tags:
         - pre_tasks
 
+    - name: install version management tool (git)
+      package:
+        name: "git"
+        state: "latest"
+      tags:
+        - pre_tasks
+
   roles:
     - "l4d2_ds"
