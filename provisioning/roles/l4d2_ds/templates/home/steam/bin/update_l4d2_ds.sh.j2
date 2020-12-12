@@ -7,6 +7,12 @@ createAndRemoveLockFile
 steamcmd_script_file="/home/steam/.local/usr/share/steam/update_l4d2_ds.txt"
 game_name="Left 4 Dead 2 Dedicated Server"
 
+if [[ "${1}" == "--cronjob" ]]
+then
+    /usr/games/steamcmd +runscript "${steamcmd_script_file}"
+    exit
+fi
+
 clear
 echoC "" "bold" "red" "This updates '${game_name}'. Once started, the process cannot be aborted via 'CTRL+C'! Is this OK? (Y/n)"
 read decision

@@ -129,7 +129,7 @@
     day: "*"
     month: "*"
     weekday: "1"
-    job: "/home/steam/.local/etc/cronjobs/update_l4d2_ds.sh"
+    job: "/home/steam/.local/etc/cronjobs/update_l4d2_ds.sh --cronjob"
     user: "steam"
     state: "present"
   tags:
