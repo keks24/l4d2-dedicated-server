@@ -12,3 +12,6 @@ set up a left 4 dead 2 dedicated server on `debian` via `vagrant`, `virtualbox` 
 - vagrant destroy --force
 - rm -R .vagrant
 - rm -R ~/.vagrant.d
+
+## steam license agreement
+by executing `vagrant up`, you are automatically accepting the `[steam license agreement](https://store.steampowered.com/agreement)`.
