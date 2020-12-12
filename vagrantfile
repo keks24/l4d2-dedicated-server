@@ -94,19 +94,19 @@ SCRIPT
 
 Vagrant.configure("2") do |config|
     config.vm.box = "debian/buster64"
-    config.vm.box_check_update = true
+    config.vm.box_check_update = "true"
     config.vm.synced_folder ".", "/vagrant", type: "virtualbox", owner: "vagrant", group: "vagrant"
 
     if Vagrant.has_plugin?("vagrant-vbguest")
-        config.vbguest.auto_update = true
-        config.vbguest.no_remote = true
+        config.vbguest.auto_update = "true"
+        config.vbguest.no_remote = "true"
     end
 
     # internal vm, which is configured like the real machine
     config.vm.define "l4d2-ds-development-vm" do |vmConfig|
         vmConfig.vm.provision "shell", inline: $prerequisites_l4d2_ds_development_vm
-        vmConfig.vm.synced_folder ".", "/vagrant", disabled: true
-        vmConfig.vbguest.auto_update = false
+        vmConfig.vm.synced_folder ".", "/vagrant", disabled: "true"
+        vmConfig.vbguest.auto_update = "false"
         vmConfig.vm.hostname = "l4d2-ds-development-vm"
         vmConfig.vm.network "private_network", ip: "192.168.100.100", virtualbox__intnet: "vm_private_network"
         # bridged network via dhcp
@@ -116,9 +116,9 @@ Vagrant.configure("2") do |config|
 
         vmConfig.vm.provider "virtualbox" do |vb|
             vb.memory = "8192"
-            vb.cpus = 2
+            vb.cpus = "2"
             vb.name = "l4d2-ds-development-vm"
-            vb.linked_clone = true
+            vb.linked_clone = "true"
         end
     end
 
@@ -130,9 +130,9 @@ Vagrant.configure("2") do |config|
 
         vmConfig.vm.provider "virtualbox" do |vb|
             vb.memory = "512"
-            vb.cpus = 1
+            vb.cpus = "1"
             vb.name = "l4d2-ds-provision-vm"
-            vb.linked_clone = true
+            vb.linked_clone = "true"
         end
 
         vmConfig.vm.provision "ansible_local" do |ansible|
@@ -141,7 +141,7 @@ Vagrant.configure("2") do |config|
             ansible.inventory_path = "provisioning/inventory.yml"
             ansible.config_file = "provisioning/ansible.cfg"
             ansible.limit = "l4d2-ds-development-vm"
-            ansible.install_mode = :pip
+            ansible.install_mode = "pip"
             #ansible.version = "2.9.13"
             #ansible.verbose = "-vvvv"
         end
