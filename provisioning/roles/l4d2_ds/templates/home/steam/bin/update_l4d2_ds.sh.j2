@@ -1,0 +1,28 @@
+#!/bin/bash
+source "/usr/local/lib/functions.sh"
+
+createAndRemoveLockFile
+
+# define global variables
+steamcmd_script_file="/home/steam/.local/usr/share/steam/update_l4d2_ds.txt"
+game_name="Left 4 Dead 2 Dedicated Server"
+
+clear
+echoC "" "bold" "red" "This updates '${game_name}'. Once started, the process cannot be aborted via 'CTRL+C'! Is this OK? (Y/n)"
+read decision
+
+case "${decision}" in
+    ""|"y"|"Y")
+        # trap sigint
+        trap "" INT
+
+        /usr/games/steamcmd +runscript "${steamcmd_script_file}"
+        ;;
+
+    "n"|"N")
+        outputErrorAndExit "error" "Aborted." "1"
+        ;;
+
+    *)
+        outputErrorAndExit "error" "Entered string '${decision}' is invalid. Must be one of the following: '<enter>', 'y', 'Y', 'n' or 'N'." "1"
+esac

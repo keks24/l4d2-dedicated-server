@@ -35,6 +35,106 @@
   tags:
     - l4d2_ds
 
+- name: prepare home directory
+  file:
+    path: "/home/steam/{{ item }}/"
+    owner: "steam"
+    group: "steam"
+    mode: "0700"
+    state: "directory"
+  with_items:
+    - ".local"
+    - ".local/bin"
+    - ".local/etc/cronjobs"
+    - ".local/usr/share/steam"
+  tags:
+    - l4d2_ds
+
+- name: create symlink to custom binary directory
+  file:
+    src: "/home/steam/.local/bin"
+    dest: "/home/steam/bin"
+    owner: "steam"
+    group: "steam"
+    state: "link"
+  tags:
+    - l4d2_ds
+
+- name: create directory for repositories
+  file:
+    path: "/usr/local/share/{{ item }}/"
+    owner: "root"
+    group: "root"
+    mode: "0755"
+    state: "directory"
+  with_items:
+    - "git"
+    - "git/keks24"
+  tags:
+    - l4d2_ds
+
+- name: clone repository "dotfiles"
+  git:
+    repo: "https://codeberg.org/keks24/dotfiles"
+    dest: "/usr/local/share/git/keks24/dotfiles/"
+    force: "yes"
+  tags:
+    - l4d2_ds
+
+- name: create symlink for "bash" functions
+  file:
+    src: "/usr/local/share/git/keks24/dotfiles/usr/local/lib/functions.sh"
+    dest: "/usr/local/lib/functions.sh"
+    owner: "root"
+    group: "root"
+    state: "link"
+  tags:
+    - l4d2_ds
+
+- name: copy steamcmd script
+  template:
+    src: "templates/home/steam/.local/usr/share/steam/update_l4d2_ds.txt.j2"
+    dest: "/home/steam/.local/usr/share/steam/update_l4d2_ds.txt"
+    owner: "steam"
+    group: "steam"
+    mode: "0644"
+  tags:
+    - l4d2_ds
+
+- name: copy update shell script
+  template:
+    src: "templates/home/steam/bin/update_l4d2_ds.sh.j2"
+    dest: "/home/steam/.local/bin/update_l4d2_ds.sh"
+    owner: "steam"
+    group: "steam"
+    mode: "0755"
+  tags:
+    - l4d2_ds
+
+- name: create symlink to update shell script for "cron"
+  file:
+    src: "/home/steam/.local/bin/update_l4d2_ds.sh"
+    dest: "/home/steam/.local/etc/cronjobs/update_l4d2_ds.sh"
+    owner: "steam"
+    group: "steam"
+    state: "link"
+  tags:
+    - l4d2_ds
+
+- name: set up cronjob to update dedicated server
+  cron:
+    name: "update left 4 dead dedicated server every monday at 5am"
+    minute: "0"
+    hour: "5"
+    day: "*"
+    month: "*"
+    weekday: "1"
+    job: "/home/steam/.local/etc/cronjobs/update_l4d2_ds.sh"
+    user: "steam"
+    state: "present"
+  tags:
+    - l4d2_ds
+
 - name: allow "non-free" packages
   apt_repository:
     repo: "{{ item.APT_REPOSITORY_REPO }}"
