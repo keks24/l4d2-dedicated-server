@@ -103,8 +103,8 @@
 
 - name: set up logrotate
   template:
-    src: "templates/etc/logrotate.d/steam_srcds_run.j2"
-    dest: "/etc/logrotate.d/steam_srcds_run"
+    src: "templates/etc/logrotate.d/steam_l4d2-ds.j2"
+    dest: "/etc/logrotate.d/steam_l4d2-ds"
     owner: "root"
     group: "root"
     mode: "0644"
