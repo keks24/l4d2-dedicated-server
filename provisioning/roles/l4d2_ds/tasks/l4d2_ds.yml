@@ -80,7 +80,6 @@
   tags:
     - l4d2_ds
 
-# refactor me: trigger "start" and "enable" handler here
 # app list: https://developer.valvesoftware.com/wiki/Steam_Application_IDs
 # dedicated servers list: https://developer.valvesoftware.com/wiki/Dedicated_Servers_List
 - name: install and validate "left 4 dead 2 dedicated server"
