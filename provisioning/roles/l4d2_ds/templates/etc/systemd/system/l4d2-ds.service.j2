@@ -27,9 +27,9 @@ User=steam
 Group=steam
 EnvironmentFile=/etc/default/l4d2-ds
 ExecStart=/home/steam/.steam/SteamApps/common/Left\x204\x20Dead\x202\x20Dedicated\x20Server/srcds_run \
-            -ip $SERVER_IP \
-            -port $SERVER_PORT \
-            -game $GAME_NAME \
-            +map $GAME_MAP \
-            $SRCDS_RUN_OPTS
+            -ip ${SERVER_IP} \
+            -port ${SERVER_PORT} \
+            -game ${GAME_NAME} \
+            +map ${GAME_MAP} \
+            ${SRCDS_RUN_OPTS}
 ExecStop=/bin/kill -s STOP ${MAINPID}
