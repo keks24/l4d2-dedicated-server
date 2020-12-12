@@ -33,3 +33,6 @@ ExecStart=/home/steam/.steam/SteamApps/common/Left\x204\x20Dead\x202\x20Dedicate
             +map ${GAME_MAP} \
             ${SRCDS_RUN_OPTS}
 ExecStop=/bin/kill -s STOP ${MAINPID}
+
+[Install]
+WantedBy=multi-user.target
