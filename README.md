@@ -9,7 +9,7 @@ set up a left 4 dead 2 dedicated server on `debian` via `vagrant`, `virtualbox` 
 - vagrant ssh l4d2-ds-development-vm
 
 ## remove
-- vagrant destroy --force
+- vagrant destroy --force --parallel
 - rm -R .vagrant
 - rm -R ~/.vagrant.d
 
