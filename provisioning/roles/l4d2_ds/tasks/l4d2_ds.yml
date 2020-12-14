@@ -37,16 +37,21 @@
 
 - name: prepare home directory
   file:
-    path: "/home/steam/{{ item }}/"
+    path: "/home/steam/{{ item }}"
     owner: "steam"
     group: "steam"
     mode: "0700"
     state: "directory"
   with_items:
-    - ".local"
-    - ".local/bin"
-    - ".local/etc/cronjobs"
-    - ".local/usr/share/steam"
+    - ".local/"
+    - ".local/bin/"
+    - ".local/etc/cronjobs/"
+    - ".local/etc/steam/"
+    - ".local/etc/steam/l4d2/"
+    - ".local/etc/steam/l4d2/cfg/"
+    - ".local/etc/steam/l4d2/cfg/userconfig/"
+    - ".local/usr/share/steam/"
+    - ".local/usr/share/steam/l4d2/"
   tags:
     - l4d2_ds
 
@@ -62,14 +67,14 @@
 
 - name: create directory for repositories
   file:
-    path: "/usr/local/share/{{ item }}/"
+    path: "/usr/local/share/{{ item }}"
     owner: "root"
     group: "root"
     mode: "0755"
     state: "directory"
   with_items:
-    - "git"
-    - "git/keks24"
+    - "git/"
+    - "git/keks24/"
   tags:
     - l4d2_ds
 
