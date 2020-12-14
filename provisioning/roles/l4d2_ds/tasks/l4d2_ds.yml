@@ -201,7 +201,7 @@
     dest: "/home/steam/.local/etc/steam/l4d2/cfg/{{ item.TEMPLATE_DEST }}"
     owner: "steam"
     group: "steam"
-    mode: "0644"
+    mode: "0600"
   with_items:
       - { TEMPLATE_SRC: "server.cfg.j2",
           TEMPLATE_DEST: "server.cfg"}
