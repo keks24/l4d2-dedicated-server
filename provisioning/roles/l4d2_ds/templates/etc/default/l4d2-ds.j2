@@ -25,4 +25,8 @@ LAN_ONLY="1"
 PID_FILE="/var/tmp/l4d2-ds.pid"
 LOG_FILE="/var/log/steam/l4d2-ds.log"
 ERROR_LOG_FILE="/var/log/steam/l4d2-ds_error.log"
-#SRCDS_RUN_OPTS="-insecure"
+# use the netconsole with caution, since the connection is unencrypted!
+# it is highly recommended to change the password!
+#SRCDS_RUN_OPTS="-insecure \
+#                -netconport 42000 \
+#                -netconpassword eKpj0^ajX~^d(}y\Y}qec%,M;/{W4YnfiIjcgm{D2@"
