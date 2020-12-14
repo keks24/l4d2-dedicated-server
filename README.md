@@ -8,6 +8,7 @@ set up a left 4 dead 2 dedicated server on `debian` via `vagrant`, `virtualbox` 
 - vagrant ssh l4d2-ds-provision-vm
 - vagrant ssh l4d2-ds-development-vm
 - vagrant provision l4d2-ds-provision-vm
+- vagrant reload
 
 ## remove
 - vagrant destroy --force --parallel
