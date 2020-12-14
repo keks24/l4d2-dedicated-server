@@ -31,6 +31,7 @@ ExecStart=/home/steam/.steam/SteamApps/common/Left\x204\x20Dead\x202\x20Dedicate
             -port ${SERVER_PORT} \
             -game ${GAME_NAME} \
             +map ${GAME_MAP} \
+            +sv_lan ${LAN_ONLY} \
             ${SRCDS_RUN_OPTS}
 ExecStop=/bin/kill -s STOP ${MAINPID}
 
