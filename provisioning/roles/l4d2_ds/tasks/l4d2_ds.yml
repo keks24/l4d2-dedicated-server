@@ -98,8 +98,8 @@
 
 - name: copy steamcmd script
   template:
-    src: "templates/home/steam/.local/usr/share/steam/update_l4d2_ds.txt.j2"
-    dest: "/home/steam/.local/usr/share/steam/update_l4d2_ds.txt"
+    src: "templates/home/steam/.local/usr/share/steam/l4d2/update_l4d2_ds.txt.j2"
+    dest: "/home/steam/.local/usr/share/steam/l4d2/update_l4d2_ds.txt"
     owner: "steam"
     group: "steam"
     mode: "0644"
