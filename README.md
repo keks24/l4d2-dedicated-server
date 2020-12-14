@@ -17,4 +17,9 @@ set up a left 4 dead 2 dedicated server on `debian` via `vagrant`, `virtualbox` 
 - by executing `vagrant up`, you are automatically accepting the `[steam license agreement](https://store.steampowered.com/agreement)`.
 
 ## connect
-- console: `connect l4d2-ds-development-vm:27015` or `connect <ip>:<port>`
+- console: `connect 127.0.0.42:27015`
+- `bind "F3" "openserverbrowser"`
+
+## forwarded ports
+- guest "0.0.0.0:27015" (TCP) -> host "127.0.0.42:27015" (TCP)
+- guest "0.0.0.0:27015" (UDP) -> host "127.0.0.42:27015" (UDP)
