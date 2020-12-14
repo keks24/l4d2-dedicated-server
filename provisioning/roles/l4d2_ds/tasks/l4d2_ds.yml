@@ -231,9 +231,6 @@
     owner: "root"
     group: "root"
     mode: "0644"
-  notify:
-    - handler_enable_l4d2-ds
-    - handler_start_l4d2-ds
   tags:
     - l4d2_ds
 
