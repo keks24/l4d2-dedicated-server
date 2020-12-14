@@ -195,6 +195,38 @@
   tags:
     - l4d2_ds
 
+- name: copy server configuration files
+  template:
+    src: "templates/home/steam/.local/etc/steam/l4d2/cfg/{{ item.TEMPLATE_SRC }}"
+    dest: "/home/steam/.local/etc/steam/l4d2/cfg/{{ item.TEMPLATE_DEST }}"
+    owner: "steam"
+    group: "steam"
+    mode: "0644"
+  with_items:
+      - { TEMPLATE_SRC: "server.cfg.j2",
+          TEMPLATE_DEST: "server.cfg"}
+      - { TEMPLATE_SRC: "userconfig/server.cfg.j2",
+          TEMPLATE_DEST: "userconfig/server.cfg"}
+      - { TEMPLATE_SRC: "userconfig/server.cfg.example.j2",
+          TEMPLATE_DEST: "userconfig/server.cfg.example"}
+  tags:
+    - l4d2_ds
+
+- name: create symlinks to server configuration files
+  file:
+    src: "/home/steam/.local/etc/steam/l4d2/cfg/{{ item.FILE_SRC }}"
+    dest: "/home/steam/.steam/SteamApps/common/Left 4 Dead 2 Dedicated Server/left4dead2/cfg/{{ item.FILE_DEST }}"
+    owner: "steam"
+    group: "steam"
+    state: "link"
+  with_items:
+    - { FILE_SRC: "server.cfg",
+        FILE_DEST: "server.cfg" }
+    - { FILE_SRC: "userconfig",
+        FILE_DEST: "userconfig" }
+  tags:
+    - l4d2_ds
+
 - name: create custom log directory
   file:
     path: "/var/log/{{ item }}/"
