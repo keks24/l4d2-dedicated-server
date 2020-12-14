@@ -130,6 +130,8 @@ Vagrant.configure("2") do |config|
             vb.cpus = "2"
             vb.name = "l4d2-ds-development-vm"
             vb.linked_clone = "true"
+            # enable nat dns resolving: http://www.virtualbox.org/manual/ch09.html#nat_host_resolver_proxy
+            vb.customize [ "modifyvm", :id, "--natdnshostresolver1", "on" ]
         end
     end
 
