@@ -14,6 +14,18 @@
 # limitations under the License.                                            #
 #############################################################################
 
+/var/log/steam/*.log
+{
+    weekly
+    rotate 12
+    compress
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+    create 0640 steam steam
+}
+
 /var/log/steam/steamcmd/*.log
 {
     weekly
