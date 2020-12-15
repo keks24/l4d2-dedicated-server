@@ -122,11 +122,11 @@ Vagrant.configure("2") do |config|
         vmConfig.vm.network "forwarded_port", guest: "26901", guest_ip: "10.0.2.254", host: "26901", host_ip: "127.0.0.42", protocol: "udp"
         ## netconsole (custom)
         ## caution!: the communication via this port is not encrypted and therefore vulnerable for a man-in-the-middle attack!
-        ##           on the vm the password is also visible in the process list! ($ ps aux | grep "srcds")
+        ##           on the vm the password is also visible in the process list! ($ ps aux | grep "srcds") and the process listens to a wildcard ip address! ("0.0.0.0")
         ###
         ### $ telnet 127.0.0.42 42000
-        ### $ tcpdump --interface="lo" -X --snapshot-length="0"
-        ### 12:51:32.182466 IP <some_hostname>.58736 > 127.0.0.42.42000: Flags [P.], seq 23:72, ack 469, win 512, options [nop,nop,TS val 2002442302 ecr 2954406813], length 49
+        ### $ tcpdump --interface="lo" "port 42000" -X --snapshot-length="0"
+        ### 12:51:32.182466 IP <some_local_hostname>.58736 > 127.0.0.42.42000: Flags [P.], seq 23:72, ack 469, win 512, options [nop,nop,TS val 2002442302 ecr 2954406813], length 49
         ### 0x0000:  4510 0065 d4cb 4000 4006 678c 7f00 0001  E..e..@.@.g.....
         ### 0x0010:  7f00 002a e570 a410 359d 313b ed0b b299  ...*.p..5.1;....
         ### 0x0020:  8018 0200 fe82 0000 0101 080a 775a d83e  ............wZ.>
@@ -140,12 +140,21 @@ Vagrant.configure("2") do |config|
         #### $ vagrant ssh l4d2-ds-development-vm
         #### $ telnet 127.0.0.1 42000
         ####
-        ### ssh tunneling and port forwarding from the host would also mitigate this:
+        ### ssh port forwarding (ssh tunneling) from the host would also mitigate this:
         ####
-        #### $ ssh -i ".vagrant/machines/l4d2-ds-development-vm/virtualbox/private_key" -L 127.0.0.42:42000:0.0.0.0:42000 vagrant@127.0.0.1 -p 2222
+        #### $ ssh -i ".vagrant/machines/l4d2-ds-development-vm/virtualbox/private_key" -L 127.0.0.42:42000:10.0.2.15:42000 vagrant@127.0.0.1 -p 2222
         #### $ telnet 127.0.0.42 42000
+        #### $ tcpdump --interface="lo" "port 2222" -X --snapshot-length="0"
+        #### 01:48:39.323745 IP <some_local_hostname>.36950 > <some_local_hostname>.2222: Flags [P.], seq 96:148, ack 117, win 512, options [nop,nop,TS val 2501360944 ecr 2501352313], length 52
+        #### 0x0000:  4520 0068 410d 4000 4006 fb60 7f00 0001  E..hA.@.@..`....
+        #### 0x0010:  7f00 0001 9056 08ae c311 c066 39be c146  .....V.....f9..F
+        #### 0x0020:  8018 0200 fe5c 0000 0101 080a 9517 bd30  .....\.........0
+        #### 0x0030:  9517 9b79 7196 9825 06ce fb1e 4944 cf10  ...yq..%....ID..
+        #### 0x0040:  5aee cad7 fa77 b175 4f70 a340 7e9e 40c5  Z....w.uOp.@~.@.
+        #### 0x0050:  e2e8 2a99 4cdc 72fe f204 b189 7a8d 39e3  ..*.L.r.....z.9.
+        #### 0x0060:  fa10 9221 9e4b ae63                      ...!.K.c
         ####
-        #vmConfig.vm.network "forwarded_port", guest: "42000", guest_ip: "0.0.0.0", host: "42000", host_ip: "127.0.0.42", protocol: "tcp"
+        #vmConfig.vm.network "forwarded_port", guest: "42000", guest_ip: "10.0.2.15", host: "42000", host_ip: "127.0.0.42", protocol: "tcp"
 
         # bridged network via dhcp
         #vmConfig.vm.network "public_network"
