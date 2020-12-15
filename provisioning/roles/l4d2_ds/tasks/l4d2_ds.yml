@@ -213,7 +213,7 @@
 # app list: https://developer.valvesoftware.com/wiki/Steam_Application_IDs
 # dedicated servers list: https://developer.valvesoftware.com/wiki/Dedicated_Servers_List
 - name: install and validate "left 4 dead 2 dedicated server"
-  shell: "/usr/games/steamcmd +login anonymous +app_update 222860 validate +quit"
+  shell: "/usr/games/steamcmd +login anonymous +app_update 222860 validate +quit >> '/var/log/steam/steamcmd/steamcmd.log'"
   args:
     creates: "/home/steam/.steam/SteamApps/common/Left 4 Dead 2 Dedicated Server/"
   become_user: "steam"
@@ -266,15 +266,15 @@
 
 - name: create symlinks to steam log directories
   file:
-    src: "{{ item.FILE_SRC }}"
+    src: "/home/steam/.steam/{{ item.FILE_SRC }}"
     dest: "/var/log/steam/{{ item.FILE_DEST }}"
     owner: "steam"
     group: "steam"
     state: "link"
   with_items:
-    - { FILE_SRC: "/home/steam/.steam/logs",
+    - { FILE_SRC: "logs",
         FILE_DEST: "steamcmd/logs" }
-    - { FILE_SRC: "/home/steam/.steam/SteamApps/common/Left 4 Dead 2 Dedicated Server/left4dead2/logs",
+    - { FILE_SRC: "steamapps/common/Left 4 Dead 2 Dedicated Server/left4dead2/logs",
         FILE_DEST: "l4d2-ds/logs" }
   tags:
     - l4d2_ds
