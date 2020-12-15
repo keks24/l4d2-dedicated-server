@@ -1,29 +1,62 @@
 // {{ ansible_managed }}
 
+// hostname for server.
 hostname "Local Left 4 Dead 2 Dedicated Server"
-//sv_contact ""
-mp_roundlimit "2"
-//sv_search_key ""
-//sv_tags ""
-//sv_steamgroup ""
-//sv_steamgroup_exclusive "0"
-//sv_password ""
-sv_allow_lobby_connect_only "0"
-sv_mincmdrate "20"
-sv_maxcmdrate "101"
-sv_minrate "15000"
-sv_maxrate "30000"
-z_difficulty "impossible"
-sv_allow_wait_command "0"
-sv_alltalk "1"
 
-log on
-sv_logecho "1"
-sv_logfile "1"
-sv_log_onefile "1"
-sv_logbans "1"
-sv_logflush "0"
-sv_logsdir "logs"
-
+// remote console password.
 // it is highly recommended to change the password!
 rcon_password "+].1wb8c8v0,Mg#^)ZK]aA\@EEjv47p#?N_S)BXY6)"
+
+// server password for entry into multiplayer games
+sv_password ""
+
+// when searching for a dedicated server from lobby, restrict search to only dedicated servers having the same sv_search_key.
+//sv_search_key ""
+// server tags. used to provide extra information to clients when they're browsing for servers. separate tags with a comma.
+//sv_tags ""
+
+// the id of the steam group that this server belongs to. you can find your group's id on the admin profile page in the steam community.
+//sv_steamgroup ""
+// if set, only members of steam group will be able to join the server when it's empty, public people will be able to join the server only if it has players.
+//sv_steamgroup_exclusive "0"
+
+// difficulty of the current game (easy, normal, hard, impossible)
+z_difficulty "impossible"
+
+// contact email for server sysop
+sv_contact ""
+
+// maximum number of rounds
+mp_roundlimit "2"
+
+// if set, players may only join this server from matchmaking lobby, may not connect directly.
+sv_allow_lobby_connect_only "0"
+
+// allow or disallow the wait command on clients connected to this server.
+sv_allow_wait_command "0"
+
+// players can hear all other players' voice communication, no team restrictions
+sv_alltalk "1"
+
+// this sets the minimum value for cl_cmdrate. 0 == unlimited.
+sv_mincmdrate "20"
+// (if sv_mincmdrate is > 0), this sets the maximum value for cl_cmdrate.
+sv_maxcmdrate "101"
+// max bandwidth rate allowed on server, 0 == unlimited
+sv_maxrate "30000"
+sv_minrate "15000"
+
+// usage:  log < on | off >
+log on
+// echo log information to the console.
+sv_logecho "1"
+// log server information in the log file.
+sv_logfile "1"
+// log server information to only one file.
+sv_log_onefile "1"
+// log server bans in the server logs.
+sv_logbans "1"
+// flush the log file to disk on each write (slow).
+sv_logflush "0"
+// folder in the game directory where server logs will be stored.
+sv_logsdir "logs"
