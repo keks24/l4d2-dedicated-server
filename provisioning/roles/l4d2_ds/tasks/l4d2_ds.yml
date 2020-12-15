@@ -267,7 +267,7 @@
     dest: "/etc/default/l4d2-ds"
     owner: "root"
     group: "root"
-    mode: "0644"
+    mode: "0600"
   tags:
     - l4d2_ds
 
