@@ -182,7 +182,7 @@
     - l4d2_ds
 
 - name: allow 32 bit packages, required for "steamcmd"
-  shell: "dpkg --add-architecture i386"
+  shell: "/usr/bin/dpkg --add-architecture i386"
   args:
     creates: "/var/lib/dpkg/arch"
   tags:
