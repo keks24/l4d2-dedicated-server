@@ -15,10 +15,42 @@
 # limitations under the License.                                            #
 #############################################################################
 
-- import_tasks: "l4d2-ds_handlers.yml"
-  tags:
-    - l4d2_ds
+- name: handler_start_netfilter-persistent
+  systemd:
+    name: "netfilter-persistent.service"
+    daemon_reload: "yes"
+    state: "started"
 
-- import_tasks: "netfilter-persistent.yml"
+- name: handler_stop_netfilter-persistent
+  systemd:
+    name: "netfilter-persistent.service"
+    daemon_reload: "yes"
+    state: "stopped"
+
+- name: handler_restart_netfilter-persistent
+  systemd:
+    name: "netfilter-persistent.service"
+    daemon_reload: "yes"
+    state: "restarted"
+
+- name: handler_enable_netfilter-persistent
+  systemd:
+    name: "netfilter-persistent.service"
+    daemon_reload: "yes"
+    enabled: "yes"
+
+- name: handler_disable_netfilter-persistent
+  systemd:
+    name: "netfilter-persistent.service"
+    daemon_reload: "yes"
+    enabled: "no"
+
+- name: handler_check_iptables
+  shell: "/usr/sbin/iptables-restore --test < '{{ item | quote }}'"
+  args:
+    chdir: "/etc/iptables/"
+  with_items:
+    - "rules.v4"
+    - "rules.v6"
   tags:
     - l4d2_ds
