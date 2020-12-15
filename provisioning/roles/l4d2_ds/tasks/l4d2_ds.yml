@@ -55,6 +55,31 @@
   tags:
     - l4d2_ds
 
+- name: prepare custom log directory
+  file:
+    path: "/var/log/{{ item.FILE_PATH }}"
+    owner: "steam"
+    group: "steam"
+    mode: "{{ item.FILE_MODE }}"
+    access_time: "preserve"
+    modification_time: "preserve"
+    state: "{{ item.FILE_STATE }}"
+  with_items:
+    - { FILE_PATH: "steam/",
+        FILE_MODE: "0700",
+        FILE_STATE: "directory" }
+    - { FILE_PATH: "steam/l4d2-ds/",
+        FILE_MODE: "0700",
+        FILE_STATE: "directory" }
+    - { FILE_PATH: "steam/steamcmd/",
+        FILE_MODE: "0700",
+        FILE_STATE: "directory" }
+    - { FILE_PATH: "steam/steamcmd/steamcmd.log",
+        FILE_MODE: "0640",
+        FILE_STATE: "touch" }
+  tags:
+    - l4d2_ds
+
 - name: create symlink to custom binary directory
   file:
     src: "/home/steam/.local/bin"
@@ -227,37 +252,43 @@
   tags:
     - l4d2_ds
 
-- name: create custom log directory
+- name: prepare left 4 dead 2 log directory
   file:
-    path: "/var/log/{{ item }}/"
+    path: "/home/steam/.steam/SteamApps/common/Left 4 Dead 2 Dedicated Server/left4dead2/logs"
     owner: "steam"
     group: "steam"
     mode: "0700"
     state: "directory"
-  with_items:
-    - "steam"
-    - "steam/l4d2-ds"
+  when:
+    - L4D2_DS_INSTALLATION_DIRECTORY.stat.exists == true
   tags:
     - l4d2_ds
 
-- name: create symlink to steam log directory
+- name: create symlinks to steam log directories
   file:
-    src: "/home/steam/.steam/logs"
-    dest: "/var/log/steam/logs"
+    src: "{{ item.FILE_SRC }}"
+    dest: "/var/log/steam/{{ item.FILE_DEST }}"
     owner: "steam"
     group: "steam"
     state: "link"
+  with_items:
+    - { FILE_SRC: "/home/steam/.steam/logs",
+        FILE_DEST: "steamcmd/logs" }
+    - { FILE_SRC: "/home/steam/.steam/SteamApps/common/Left 4 Dead 2 Dedicated Server/left4dead2/logs",
+        FILE_DEST: "l4d2-ds/logs" }
   tags:
     - l4d2_ds
 
 - name: set up logrotate
   template:
-    src: "templates/etc/logrotate.d/l4d2-ds.j2"
-    dest: "/etc/logrotate.d/l4d2-ds"
+    src: "{{ item }}"
+    dest: "/etc/logrotate.d/{{ item | basename | regex_replace('\\.j2$') }}"
     owner: "root"
     group: "root"
     mode: "0644"
     validate: "/sbin/logrotate --debug %s"
+  with_fileglob:
+    - "templates/etc/logrotate.d/*.j2"
   tags:
     - l4d2_ds
 
