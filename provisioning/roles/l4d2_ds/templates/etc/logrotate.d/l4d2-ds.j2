@@ -25,3 +25,15 @@
     copytruncate
     create 0640 steam steam
 }
+
+/var/log/steam/l4d2-ds/logs/*.log
+{
+    weekly
+    rotate 12
+    compress
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+    create 0640 steam steam
+}
