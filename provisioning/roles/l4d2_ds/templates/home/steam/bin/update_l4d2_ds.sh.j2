@@ -5,11 +5,14 @@ createAndRemoveLockFile
 
 # define global variables
 steamcmd_script_file="/home/steam/.local/usr/share/steam/l4d2/update_l4d2_ds.txt"
+log_directory_path="/var/log/steam/steamcmd"
+log_filename="steamcmd.log"
+log_file="${log_directory_path}/${log_filename}"
 game_name="Left 4 Dead 2 Dedicated Server"
 
 if [[ "${1}" == "--cronjob" ]]
 then
-    /usr/games/steamcmd +runscript "${steamcmd_script_file}"
+    /usr/games/steamcmd +runscript "${steamcmd_script_file}" >> "${log_file}"
     exit
 fi
 
@@ -22,7 +25,7 @@ case "${decision}" in
         # trap sigint
         trap "" INT
 
-        /usr/games/steamcmd +runscript "${steamcmd_script_file}"
+        /usr/games/steamcmd +runscript "${steamcmd_script_file}" >> "${log_file}"
         ;;
 
     "n"|"N")
