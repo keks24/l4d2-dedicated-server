@@ -215,46 +215,21 @@
 - name: install and validate "left 4 dead 2 dedicated server"
   shell: "/usr/games/steamcmd +login anonymous +app_update 222860 validate +quit >> '/var/log/steam/steamcmd/steamcmd.log'"
   args:
-    creates: "/home/steam/.steam/SteamApps/common/Left 4 Dead 2 Dedicated Server/"
+    creates: "/home/steam/.steam/steamapps/common/Left 4 Dead 2 Dedicated Server/"
   become_user: "steam"
   tags:
     - l4d2_ds
 
-- name: copy server configuration files
-  template:
-    src: "templates/home/steam/.local/etc/steam/l4d2/cfg/{{ item.TEMPLATE_SRC }}"
-    dest: "/home/steam/.local/etc/steam/l4d2/cfg/{{ item.TEMPLATE_DEST }}"
-    owner: "steam"
-    group: "steam"
-    mode: "0600"
-  with_items:
-      - { TEMPLATE_SRC: "server.cfg.j2",
-          TEMPLATE_DEST: "server.cfg"}
-      - { TEMPLATE_SRC: "userconfig/server.cfg.j2",
-          TEMPLATE_DEST: "userconfig/server.cfg"}
-      - { TEMPLATE_SRC: "userconfig/server.cfg.example.j2",
-          TEMPLATE_DEST: "userconfig/server.cfg.example"}
-  tags:
-    - l4d2_ds
-
-- name: create symlinks to server configuration files
-  file:
-    src: "/home/steam/.local/etc/steam/l4d2/cfg/{{ item.FILE_SRC }}"
-    dest: "/home/steam/.steam/SteamApps/common/Left 4 Dead 2 Dedicated Server/left4dead2/cfg/{{ item.FILE_DEST }}"
-    owner: "steam"
-    group: "steam"
-    state: "link"
-  with_items:
-    - { FILE_SRC: "server.cfg",
-        FILE_DEST: "server.cfg" }
-    - { FILE_SRC: "userconfig",
-        FILE_DEST: "userconfig" }
+- name: check, if installation directory exists
+  stat:
+    path: "/home/steam/.steam/steamapps/common/Left 4 Dead 2 Dedicated Server/"
+  register: "L4D2_DS_INSTALLATION_DIRECTORY"
   tags:
     - l4d2_ds
 
 - name: prepare left 4 dead 2 log directory
   file:
-    path: "/home/steam/.steam/SteamApps/common/Left 4 Dead 2 Dedicated Server/left4dead2/logs"
+    path: "/home/steam/.steam/steamapps/common/Left 4 Dead 2 Dedicated Server/left4dead2/logs"
     owner: "steam"
     group: "steam"
     mode: "0700"
@@ -335,6 +310,42 @@
   tags:
     - l4d2_ds
 
+- name: copy server configuration files
+  template:
+    src: "templates/home/steam/.local/etc/steam/l4d2/cfg/{{ item.TEMPLATE_SRC }}"
+    dest: "/home/steam/.local/etc/steam/l4d2/cfg/{{ item.TEMPLATE_DEST }}"
+    owner: "steam"
+    group: "steam"
+    mode: "0600"
+  with_items:
+      - { TEMPLATE_SRC: "server.cfg.j2",
+          TEMPLATE_DEST: "server.cfg"}
+      - { TEMPLATE_SRC: "userconfig/server.cfg.j2",
+          TEMPLATE_DEST: "userconfig/server.cfg"}
+      - { TEMPLATE_SRC: "userconfig/server.cfg.example.j2",
+          TEMPLATE_DEST: "userconfig/server.cfg.example"}
+  tags:
+    - l4d2_ds
+
+- name: create symlinks to server configuration files
+  file:
+    src: "/home/steam/.local/etc/steam/l4d2/cfg/{{ item.FILE_SRC }}"
+    dest: "/home/steam/.steam/steamapps/common/Left 4 Dead 2 Dedicated Server/left4dead2/cfg/{{ item.FILE_DEST }}"
+    owner: "steam"
+    group: "steam"
+    state: "link"
+  with_items:
+    - { FILE_SRC: "server.cfg",
+        FILE_DEST: "server.cfg" }
+    - { FILE_SRC: "userconfig",
+        FILE_DEST: "userconfig" }
+  tags:
+    - l4d2_ds
+
+#- name: drop incoming and outgoing packages on port "42000"
+#iptables-persistent
+#iptables-save > /etc/iptables/rules.v4
+
 # refactor me: refactor this into a shell script, remove the pid file on "EXIT" signal
 #              comment this, when the systemd service unit is finished
 # "stdout" has to be redirected somewhere, in order to put the process in the background
@@ -342,7 +353,7 @@
 #- name: start "left 4 dead 2 dedicated server"
 #  shell: "./srcds_run -pidfile /var/tmp/l4d2-ds.pid -ip 0.0.0.0 -port 27015 -game left4dead2 +map c1m1_hotel >> /var/log/steam/l4d2-ds.log 2>> /var/log/steam/l4d2-ds_error.log &"
 #  args:
-#    chdir: "/home/steam/.steam/SteamApps/common/Left 4 Dead 2 Dedicated Server/"
+#    chdir: "/home/steam/.steam/steamapps/common/Left 4 Dead 2 Dedicated Server/"
 #    creates: "/var/tmp/l4d2-ds.pid"
 #  become_user: "steam"
 #  tags:
