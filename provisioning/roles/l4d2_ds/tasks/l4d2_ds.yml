@@ -342,9 +342,70 @@
   tags:
     - l4d2_ds
 
-#- name: drop incoming and outgoing packages on port "42000"
-#iptables-persistent
-#iptables-save > /etc/iptables/rules.v4
+- name: install tool to save "iptables" rules (iptables-persistent)
+  package:
+    name: "iptables-persistent"
+    state: "latest"
+  tags:
+    - l4d2_ds
+
+- name: prepare "iptables" configuration directory
+  file:
+    path: "/etc/{{ item.FILE_PATH }}"
+    owner: "root"
+    group: "root"
+    mode: "{{ item.FILE_MODE }}"
+    access_time: "preserve"
+    modification_time: "preserve"
+    state: "{{ item.FILE_STATE }}"
+  with_items:
+    - { FILE_PATH: "iptables",
+        FILE_MODE: "0700",
+        FILE_STATE: "directory" }
+    - { FILE_PATH: "iptables/rules.v4",
+        FILE_MODE: "0400",
+        FILE_STATE: "touch" }
+    - { FILE_PATH: "iptables/rules.v6",
+        FILE_MODE: "0400",
+        FILE_STATE: "touch" }
+  tags:
+    - l4d2_ds
+
+- name: drop incoming and outgoing packages on port "42000"
+  iptables:
+    action: "append"
+    chain: "{{ item.IPTABLES_CHAIN }}"
+    protocol: "tcp"
+    destination_port: "42000"
+    jump: "DROP"
+    ip_version: "{{ item.IPTABLES_IP_VERSION }}"
+    comment: "{{ ANSIBLE_MANAGED }}: steam netconsole (unencrypted)"
+  with_items:
+    - { IPTABLES_CHAIN: "INPUT",
+        IPTABLES_IP_VERSION: "ipv4" }
+    - { IPTABLES_CHAIN: "OUTPUT",
+        IPTABLES_IP_VERSION: "ipv4" }
+    - { IPTABLES_CHAIN: "INPUT",
+        IPTABLES_IP_VERSION: "ipv6" }
+    - { IPTABLES_CHAIN: "OUTPUT",
+        IPTABLES_IP_VERSION: "ipv6" }
+  notify:
+    - "handler_enable_netfilter-persistent"
+    - "handler_start_netfilter-persistent"
+  tags:
+    - l4d2_ds
+
+- name: save "iptables" rules
+  shell: "/usr/sbin/iptables-save > '{{ item | quote }}'"
+  args:
+    chdir: "/etc/iptables/"
+  with_items:
+    - "rules.v4"
+    - "rules.v6"
+  notify:
+    - "handler_check_iptables"
+  tags:
+    - l4d2_ds
 
 # refactor me: refactor this into a shell script, remove the pid file on "EXIT" signal
 #              comment this, when the systemd service unit is finished
