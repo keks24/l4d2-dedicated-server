@@ -392,18 +392,8 @@
   notify:
     - "handler_enable_netfilter-persistent"
     - "handler_start_netfilter-persistent"
-  tags:
-    - l4d2_ds
-
-- name: save "iptables" rules
-  shell: "/usr/sbin/iptables-save > '{{ item | quote }}'"
-  args:
-    chdir: "/etc/iptables/"
-  with_items:
-    - "rules.v4"
-    - "rules.v6"
-  notify:
-    - "handler_check_iptables"
+    - "handler_save_iptables"
+    - "handler_validate_iptables"
   tags:
     - l4d2_ds
 
