@@ -46,13 +46,14 @@
     enabled: "no"
 
 - name: handler_save_iptables
-  shell: "/usr/sbin/iptables-save --file '{{ item | quote }}'"
-  args:
-    chdir: "/etc/iptables/"
+  shell: "/usr/sbin/netfilter-persistent save"
   changed_when: "false"
-  with_items:
-    - "rules.v4"
-    - "rules.v6"
+  tags:
+    - l4d2_ds
+
+- name: handler_reload_iptables
+  shell: "/usr/sbin/netfilter-persistent reload"
+  changed_when: "false"
   tags:
     - l4d2_ds
 
