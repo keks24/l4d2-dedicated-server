@@ -371,24 +371,29 @@
   tags:
     - l4d2_ds
 
-- name: drop incoming and outgoing packages on port "42000"
+- name: allow "127.0.0.1" on port "42000", drop incoming packages on port "42000"
   iptables:
     action: "append"
-    chain: "{{ item.IPTABLES_CHAIN }}"
+    chain: "INPUT"
     protocol: "tcp"
+    source: "{{ item.IPTABLES_SOURCE }}"
     destination_port: "42000"
-    jump: "DROP"
+    jump: "{{ item.IPTABLES_JUMP }}"
     ip_version: "{{ item.IPTABLES_IP_VERSION }}"
     comment: "{{ ANSIBLE_MANAGED }}: steam netconsole (unencrypted)"
   with_items:
-    - { IPTABLES_CHAIN: "INPUT",
-        IPTABLES_IP_VERSION: "ipv4" }
-    - { IPTABLES_CHAIN: "OUTPUT",
-        IPTABLES_IP_VERSION: "ipv4" }
-    - { IPTABLES_CHAIN: "INPUT",
-        IPTABLES_IP_VERSION: "ipv6" }
-    - { IPTABLES_CHAIN: "OUTPUT",
-        IPTABLES_IP_VERSION: "ipv6" }
+    - { IPTABLES_SOURCE: "127.0.0.1",
+        IPTABLES_IP_VERSION: "ipv4",
+        IPTABLES_JUMP: "ACCEPT" }
+    - { IPTABLES_SOURCE: "0.0.0.0/0",
+        IPTABLES_IP_VERSION: "ipv4",
+        IPTABLES_JUMP: "DROP" }
+    - { IPTABLES_SOURCE: "0:0:0:0:0:0:0:1",
+        IPTABLES_IP_VERSION: "ipv6",
+        IPTABLES_JUMP: "ACCEPT" }
+    - { IPTABLES_SOURCE: "0:0:0:0:0:0:0:0/0",
+        IPTABLES_IP_VERSION: "ipv6",
+        IPTABLES_JUMP: "DROP" }
   notify:
     - "handler_enable_netfilter-persistent"
     - "handler_start_netfilter-persistent"
