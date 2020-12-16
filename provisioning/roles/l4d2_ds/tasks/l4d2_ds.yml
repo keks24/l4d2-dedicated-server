@@ -363,10 +363,10 @@
         FILE_MODE: "0700",
         FILE_STATE: "directory" }
     - { FILE_PATH: "iptables/rules.v4",
-        FILE_MODE: "0400",
+        FILE_MODE: "0640",
         FILE_STATE: "touch" }
     - { FILE_PATH: "iptables/rules.v6",
-        FILE_MODE: "0400",
+        FILE_MODE: "0640",
         FILE_STATE: "touch" }
   tags:
     - l4d2_ds
