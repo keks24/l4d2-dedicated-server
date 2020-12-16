@@ -383,7 +383,7 @@
     destination_port: "42000"
     jump: "LOG"
     log_level: "debug"
-    log_prefix: "[SUSPECT] "
+    log_prefix: "[netconsole] "
     ip_version: "{{ item.IPTABLES_IP_VERSION }}"
     comment: "{{ ANSIBLE_MANAGED }}: steam netconsole (unencrypted)"
   with_items:
