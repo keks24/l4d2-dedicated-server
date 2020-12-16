@@ -154,7 +154,7 @@ Vagrant.configure("2") do |config|
         #### 0x0050:  e2e8 2a99 4cdc 72fe f204 b189 7a8d 39e3  ..*.L.r.....z.9.
         #### 0x0060:  fa10 9221 9e4b ae63                      ...!.K.c
         ####
-        vmConfig.vm.network "forwarded_port", guest: "42000", guest_ip: "10.0.2.15", host: "42000", host_ip: "127.0.0.42", protocol: "tcp"
+        vmConfig.vm.network "forwarded_port", guest: "42000", guest_ip: "10.0.2.254", host: "42000", host_ip: "127.0.0.42", protocol: "tcp"
 
         # bridged network via dhcp
         #vmConfig.vm.network "public_network"
