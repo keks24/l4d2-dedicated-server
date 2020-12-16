@@ -346,6 +346,9 @@
   package:
     name: "iptables-persistent"
     state: "latest"
+  notify:
+    - "handler_enable_netfilter-persistent"
+    - "handler_start_netfilter-persistent"
   tags:
     - l4d2_ds
 
@@ -395,8 +398,6 @@
         IPTABLES_IP_VERSION: "ipv6",
         IPTABLES_JUMP: "DROP" }
   notify:
-    - "handler_enable_netfilter-persistent"
-    - "handler_start_netfilter-persistent"
     - "handler_save_iptables"
     - "handler_validate_iptables"
   tags:
