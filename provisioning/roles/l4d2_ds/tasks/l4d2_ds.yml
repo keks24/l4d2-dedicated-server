@@ -220,7 +220,7 @@
   tags:
     - l4d2_ds
 
-- name: check, if installation directory exists
+- name: validate, if installation directory exists
   stat:
     path: "/home/steam/.steam/steamapps/common/Left 4 Dead 2 Dedicated Server/"
   register: "L4D2_DS_INSTALLATION_DIRECTORY"
