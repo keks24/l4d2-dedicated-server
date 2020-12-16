@@ -48,22 +48,18 @@
 - name: handler_save_iptables
   shell: "/usr/sbin/netfilter-persistent save"
   changed_when: "false"
-  tags:
-    - l4d2_ds
 
 - name: handler_reload_iptables
   shell: "/usr/sbin/netfilter-persistent reload"
   changed_when: "false"
-  tags:
-    - l4d2_ds
 
 - name: handler_validate_iptables
-  shell: "/usr/sbin/iptables-restore --test '{{ item | quote }}'"
+  shell: "/usr/sbin/{{ item.SHELL_IPTABLES_COMMAND | quote }} --test '{{ item.SHELL_IPTABLES_FILE | quote }}'"
   args:
     chdir: "/etc/iptables/"
   changed_when: "false"
   with_items:
-    - "rules.v4"
-    - "rules.v6"
-  tags:
-    - l4d2_ds
+    - { SHELL_IPTABLES_COMMAND: "iptables-restore",
+        SHELL_IPTABLES_FILE: "rules.v4" }
+    - { SHELL_IPTABLES_COMMAND: "ip6tables-restore",
+        SHELL_IPTABLES_FILE: "rules.v6" }
