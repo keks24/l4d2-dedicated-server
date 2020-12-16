@@ -382,13 +382,13 @@
     ip_version: "{{ item.IPTABLES_IP_VERSION }}"
     comment: "{{ ANSIBLE_MANAGED }}: steam netconsole (unencrypted)"
   with_items:
-    - { IPTABLES_SOURCE: "127.0.0.1",
+    - { IPTABLES_SOURCE: "127.0.0.1/32",
         IPTABLES_IP_VERSION: "ipv4",
         IPTABLES_JUMP: "ACCEPT" }
     - { IPTABLES_SOURCE: "0.0.0.0/0",
         IPTABLES_IP_VERSION: "ipv4",
         IPTABLES_JUMP: "DROP" }
-    - { IPTABLES_SOURCE: "0:0:0:0:0:0:0:1",
+    - { IPTABLES_SOURCE: "0:0:0:0:0:0:0:1/128",
         IPTABLES_IP_VERSION: "ipv6",
         IPTABLES_JUMP: "ACCEPT" }
     - { IPTABLES_SOURCE: "0:0:0:0:0:0:0:0/0",
