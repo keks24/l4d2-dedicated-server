@@ -25,3 +25,7 @@ set up a left 4 dead 2 dedicated server on `debian` via `vagrant`, `virtualbox` 
 ## forwarded ports
 - guest "0.0.0.0:27015" (TCP) -> host "127.0.0.42:27015" (TCP)
 - guest "0.0.0.0:27015" (UDP) -> host "127.0.0.42:27015" (UDP)
+- [...]
+
+## netconsole
+telnet 127.0.0.1 42000
