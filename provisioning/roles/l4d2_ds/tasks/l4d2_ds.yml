@@ -374,6 +374,29 @@
   tags:
     - l4d2_ds
 
+- name: enable logging for port "42000"
+  iptables:
+    action: "append"
+    chain: "INPUT"
+    protocol: "tcp"
+    source: "{{ item.IPTABLES_SOURCE }}"
+    destination_port: "42000"
+    jump: "LOG"
+    log_level: "debug"
+    log_prefix: "[SUSPECT] "
+    ip_version: "{{ item.IPTABLES_IP_VERSION }}"
+    comment: "{{ ANSIBLE_MANAGED }}: steam netconsole (unencrypted)"
+  with_items:
+    - { IPTABLES_SOURCE: "0.0.0.0/0",
+        IPTABLES_IP_VERSION: "ipv4" }
+    - { IPTABLES_SOURCE: "0:0:0:0:0:0:0:0/0",
+        IPTABLES_IP_VERSION: "ipv6" }
+  notify:
+    - "handler_save_iptables"
+    - "handler_validate_iptables"
+  tags:
+    - l4d2_ds
+
 - name: allow "127.0.0.1" on port "42000", drop incoming packages on port "42000"
   iptables:
     action: "append"
