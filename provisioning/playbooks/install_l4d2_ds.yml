@@ -18,8 +18,12 @@
 - hosts: "all"
   pre_tasks:
     - name: install python packages for provisioning via "ansible"
-      raw: "apt-get --assume-yes install python python3 python-apt"
-      changed_when: "false"
+      package:
+        name:
+          - "python"
+          - "python3"
+          - "python-apt"
+        state: "latest"
       tags:
         - pre_tasks
 
