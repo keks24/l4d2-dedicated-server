@@ -1,0 +1,4 @@
+#!/bin/bash
+netconsole_password=$(/usr/bin/awk -F "-netconpassword " '{ gsub("\"", ""); printf "%s", $2 }' "/etc/default/l4d2-ds")
+echo "PASS ${netconsole_password}"
+echo 'exec "server.cfg"'
