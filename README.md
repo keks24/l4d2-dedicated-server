@@ -28,4 +28,4 @@ set up a left 4 dead 2 dedicated server on `debian` via `vagrant`, `virtualbox` 
 - [...]
 
 ## netconsole
-telnet 127.0.0.1 42000
+nc 127.0.0.1 42000
