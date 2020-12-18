@@ -271,8 +271,8 @@
   template:
     src: "templates/etc/default/l4d2-ds.j2"
     dest: "/etc/default/l4d2-ds"
-    owner: "root"
-    group: "root"
+    owner: "steam"
+    group: "steam"
     mode: "0600"
   tags:
     - l4d2_ds
