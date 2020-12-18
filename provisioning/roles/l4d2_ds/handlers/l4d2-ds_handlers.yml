@@ -33,6 +33,12 @@
     daemon_reload: "yes"
     state: "restarted"
 
+- name: handler_reload_l4d2-ds
+  systemd:
+    name: "l4d2-ds.service"
+    daemon_reload: "yes"
+    state: "reloaded"
+
 - name: handler_enable_l4d2-ds
   systemd:
     name: "l4d2-ds.service"
