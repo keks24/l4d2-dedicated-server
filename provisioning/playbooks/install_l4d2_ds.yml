@@ -34,5 +34,12 @@
       tags:
         - pre_tasks
 
+    - name: install tcp/ip swiss army knife (netcat-traditional)
+      package:
+        name: "netcat-traditional"
+        state: "latest"
+      tags:
+        - pre_tasks
+
   roles:
     - "l4d2_ds"
