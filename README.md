@@ -19,7 +19,7 @@ set up a left 4 dead 2 dedicated server on `debian` via `vagrant`, `virtualbox` 
 - by executing `vagrant up`, you are automatically accepting the `[steam license agreement](https://store.steampowered.com/agreement)`.
 
 ## connect
-- console: `connect 127.0.0.42:27015`
+- in-game console: `connect 127.0.0.42:27015`
 - `bind "F3" "openserverbrowser"`
 
 ## forwarded ports
@@ -28,4 +28,10 @@ set up a left 4 dead 2 dedicated server on `debian` via `vagrant`, `virtualbox` 
 - [...]
 
 ## netconsole
-nc 127.0.0.1 42000
+- nc 127.0.0.1 42000
+
+## systemd service unit
+- systemctl start l4d2-ds.service
+- systemctl stop l4d2-ds.service
+- systemctl restart l4d2-ds.service
+- systemctl reload l4d2-ds.service
