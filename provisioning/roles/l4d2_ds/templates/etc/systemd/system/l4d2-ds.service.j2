@@ -34,7 +34,7 @@ ExecStart=/home/steam/.steam/steamapps/common/Left\x204\x20Dead\x202\x20Dedicate
             +sv_lan ${LAN_ONLY} \
             +sv_gametypes ${ALLOWED_GAME_TYPES} \
             ${SRCDS_RUN_OPTS}
-ExecReload=nc -nq 1 -e /home/steam/bin/reload_l4d2_ds.sh 127.0.0.1 42000
+ExecReload=/home/steam/bin/reload_l4d2_ds.sh
 ExecStop=/bin/kill -s STOP ${MAINPID}
 
 [Install]

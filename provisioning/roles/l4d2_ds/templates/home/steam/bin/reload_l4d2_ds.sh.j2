@@ -15,6 +15,17 @@
 # limitations under the License.                                            #
 #############################################################################
 
-netconsole_password=$(/usr/bin/awk -F "-netconpassword " '/-netconpassword/ { gsub("\"", ""); print $2 }' "/etc/default/l4d2-ds")
-echo "PASS ${netconsole_password}"
-echo 'exec "server.cfg"'
+source "/usr/local/lib/functions.sh"
+
+createAndRemoveLockFile
+
+COMMAND_ARRAY+=("/usr/bin/mawk" "/usr/bin/nc")
+checkCommands
+
+# define global variables
+declare -r netconsole_password=$(/usr/bin/mawk -F "-netconpassword " '/-netconpassword/ { gsub("\"", ""); print $2 }' "/etc/default/l4d2-ds")
+declare -r netconsole_ip="127.0.0.1"
+declare -r netconsole_port="42000"
+
+/usr/bin/nc -nq 1 "${netconsole_ip}" "${netconsole_port}" -c "echo 'PASS ${netconsole_password}' && \
+                                                              echo 'exec \"server.cfg\"'"
