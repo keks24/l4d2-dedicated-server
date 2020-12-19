@@ -35,3 +35,11 @@ set up a left 4 dead 2 dedicated server on `debian` via `vagrant`, `virtualbox` 
 - systemctl stop l4d2-ds.service
 - systemctl restart l4d2-ds.service
 - systemctl reload l4d2-ds.service
+
+## hardware requirements
+- l4d2-ds-development-vm
+    - vb.memory = "8192"
+    - vb.cpus = "2"
+- l4d2-ds-provision-vm
+    - vb.memory = "512"
+    - vb.cpus = "1"
