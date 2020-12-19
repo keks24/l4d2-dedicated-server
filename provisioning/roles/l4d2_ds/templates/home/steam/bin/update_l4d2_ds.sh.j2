@@ -37,8 +37,7 @@ then
 fi
 
 clear
-echoC "" "bold" "red" "This updates '${game_name}'. Once started, the process cannot be aborted via 'CTRL+C'! Start update? (Y/n)"
-read decision
+read -p "$(echoC '' 'bold' 'red' 'This updates '"'${game_name}'"'. Once started, the process cannot be aborted via '"'CTRL+C!'"' Start update? (Y/n)')" decision
 
 case "${decision}" in
     ""|"y"|"Y")
