@@ -106,7 +106,7 @@ Vagrant.configure("2") do |config|
     config.vm.define "l4d2-ds-development-vm" do |vmConfig|
         vmConfig.vm.provision "shell", inline: $prerequisites_l4d2_ds_development_vm
         vmConfig.vm.synced_folder ".", "/vagrant", disabled: "true"
-        vmConfig.vbguest.auto_update = "false"
+        vmConfig.vbguest.no_install = "true"
 
         vmConfig.vm.hostname = "l4d2-ds-development-vm"
         vmConfig.vm.network "private_network", ip: "192.168.100.100", virtualbox__intnet: "vm_private_network"
